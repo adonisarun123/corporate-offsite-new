@@ -11,5 +11,18 @@ export default {
     description: {
       env: { server: true, client: true }
     }
+  },
+  // Explicitly define routes to prerender
+  onBeforePrerender: async () => {
+    const routes = [
+      '/',
+      '/destinations',
+      '/activities', 
+      '/venues',
+      '/packages',
+      '/about',
+      '/contact'
+    ]
+    return routes
   }
 }
