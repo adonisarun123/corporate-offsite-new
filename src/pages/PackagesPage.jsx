@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import PackageCard from '../components/PackageCard.jsx'
 import { Search, Filter, MapPin, Users, Calendar, Star, Check, Wifi, Car, Coffee, Utensils } from 'lucide-react'
+import { whatsappActions, trackCTAClick } from '../utils/ctaActions.js'
 
 const packageCategories = [
   { id: 'all', name: 'All Packages', count: 12 },
@@ -341,10 +342,24 @@ export default function PackagesPage() {
             We can create a bespoke package tailored to your specific objectives, budget, and team requirements.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-primary hover:bg-primary/90">
+            <Button 
+              size="lg" 
+              className="bg-primary hover:bg-primary/90"
+              onClick={() => {
+                trackCTAClick('request_custom_package')
+                whatsappActions.proposal('custom package tailored to our specific requirements')
+              }}
+            >
               Request Custom Package
             </Button>
-            <Button variant="outline" size="lg">
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => {
+                trackCTAClick('speak_package_expert')
+                whatsappActions.general('I\'d like to speak with a package expert to discuss our team offsite requirements.')
+              }}
+            >
               Speak with Package Expert
             </Button>
           </div>

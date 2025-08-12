@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { MapPin, Users, Star, Wifi, Car, Coffee, Utensils } from 'lucide-react'
+import { whatsappActions, trackCTAClick } from '../utils/ctaActions.js'
 
 export function VenueCard({ venue }) {
   const {
@@ -99,10 +100,23 @@ export function VenueCard({ venue }) {
         )}
         
         <div className="flex gap-2 pt-2">
-          <Button className="flex-1 bg-primary hover:bg-primary/90">
+          <Button 
+            className="flex-1 bg-primary hover:bg-primary/90"
+            onClick={() => {
+              trackCTAClick('get_quote_venue', name)
+              whatsappActions.quote(`${name} in ${location}`)
+            }}
+          >
             Get Quote
           </Button>
-          <Button variant="outline" className="flex-1">
+          <Button 
+            variant="outline" 
+            className="flex-1"
+            onClick={() => {
+              trackCTAClick('view_details_venue', name)
+              whatsappActions.general(`I'd like more details about ${name} in ${location}`)
+            }}
+          >
             View Details
           </Button>
         </div>

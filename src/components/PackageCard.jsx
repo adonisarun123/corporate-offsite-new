@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Calendar, Users, MapPin, CheckCircle, Download, Phone } from 'lucide-react'
+import { whatsappActions, phoneActions, trackCTAClick } from '../utils/ctaActions.js'
 
 export function PackageCard({ package: pkg }) {
   const {
@@ -115,13 +116,35 @@ export function PackageCard({ package: pkg }) {
         )}
         
         <div className="flex gap-2 pt-2">
-          <Button className="flex-1 bg-primary hover:bg-primary/90">
+          <Button 
+            className="flex-1 bg-primary hover:bg-primary/90"
+            onClick={() => {
+              trackCTAClick('get_proposal_package', title)
+              whatsappActions.proposal(title)
+            }}
+          >
             Get Proposal
           </Button>
-          <Button variant="outline" size="sm" className="px-3">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="px-3"
+            onClick={() => {
+              trackCTAClick('download_package', title)
+              whatsappActions.general(`I'd like to download the detailed brochure for ${title}. Can you send it to me?`)
+            }}
+          >
             <Download className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" className="px-3">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="px-3"
+            onClick={() => {
+              trackCTAClick('call_package', title)
+              phoneActions.general()
+            }}
+          >
             <Phone className="h-4 w-4" />
           </Button>
         </div>

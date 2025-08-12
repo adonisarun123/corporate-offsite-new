@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { CheckCircle, AlertCircle, Phone, Mail, MessageCircle } from 'lucide-react'
+import { whatsappActions, phoneActions, formActions, trackCTAClick } from '../utils/ctaActions.js'
 
 export default function ContactForm({ title = "Get Custom Proposal", description = "Tell us about your requirements and we'll create a custom proposal for your team offsite." }) {
   const [formData, setFormData] = useState({
@@ -53,11 +54,17 @@ export default function ContactForm({ title = "Get Custom Proposal", description
     
     setIsSubmitting(true)
     
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      console.log('Form submitted:', formData)
-      setIsSubmitted(true)
+      trackCTAClick('contact_form_submit', formData.company || 'unknown')
+      const result = await formActions.handleContactForm(formData)
+      
+      if (result.success) {
+        setIsSubmitted(true)
+        setFormData({
+          name: '', email: '', phone: '', company: '', teamSize: '', 
+          budget: '', location: '', dates: '', requirements: ''
+        })
+      }
     } catch (error) {
       console.error('Submission error:', error)
     } finally {
@@ -77,11 +84,23 @@ export default function ContactForm({ title = "Get Custom Proposal", description
             We've received your request and will get back to you within 2 hours with a custom proposal.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-green-600 hover:bg-green-700">
+            <Button 
+              className="bg-green-600 hover:bg-green-700"
+              onClick={() => {
+                trackCTAClick('whatsapp_contact_form')
+                whatsappActions.general()
+              }}
+            >
               <MessageCircle className="h-4 w-4 mr-2" />
               WhatsApp Us
             </Button>
-            <Button variant="outline">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                trackCTAClick('call_contact_form')
+                phoneActions.general()
+              }}
+            >
               <Phone className="h-4 w-4 mr-2" />
               Call Now
             </Button>

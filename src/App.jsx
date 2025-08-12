@@ -16,6 +16,7 @@ import CaseStudiesPage from './pages/CaseStudiesPage.jsx'
 import BlogPage from './pages/BlogPage.jsx'
 import AboutPage from './pages/AboutPage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
+import { whatsappActions, phoneActions, formActions, trackCTAClick } from './utils/ctaActions.js'
 import './App.css'
 
 // Sample Data
@@ -189,15 +190,38 @@ function Header() {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline" size="sm" className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-2"
+              onClick={() => {
+                trackCTAClick('whatsapp_header')
+                whatsappActions.general()
+              }}
+            >
               <MessageCircle className="h-4 w-4" />
               WhatsApp
             </Button>
-            <Button variant="outline" size="sm" className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-2"
+              onClick={() => {
+                trackCTAClick('call_header')
+                phoneActions.general()
+              }}
+            >
               <Phone className="h-4 w-4" />
               Call
             </Button>
-            <Button size="sm" className="bg-primary hover:bg-primary/90">
+            <Button 
+              size="sm" 
+              className="bg-primary hover:bg-primary/90"
+              onClick={() => {
+                trackCTAClick('plan_offsite_header')
+                whatsappActions.proposal()
+              }}
+            >
               Plan My Offsite
             </Button>
           </div>
@@ -227,15 +251,38 @@ function Header() {
               <Link to="/case-studies" className="text-gray-700 hover:text-primary transition-colors">Case Studies</Link>
               <Link to="/blog" className="text-gray-700 hover:text-primary transition-colors">Blog</Link>
               <div className="flex flex-col space-y-2 pt-4">
-                <Button variant="outline" size="sm" className="flex items-center gap-2 justify-center">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex items-center gap-2 justify-center"
+                  onClick={() => {
+                    trackCTAClick('whatsapp_mobile_menu')
+                    whatsappActions.general()
+                  }}
+                >
                   <MessageCircle className="h-4 w-4" />
                   WhatsApp
                 </Button>
-                <Button variant="outline" size="sm" className="flex items-center gap-2 justify-center">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex items-center gap-2 justify-center"
+                  onClick={() => {
+                    trackCTAClick('call_mobile_menu')
+                    phoneActions.general()
+                  }}
+                >
                   <Phone className="h-4 w-4" />
                   Call
                 </Button>
-                <Button size="sm" className="bg-primary hover:bg-primary/90">
+                <Button 
+                  size="sm" 
+                  className="bg-primary hover:bg-primary/90"
+                  onClick={() => {
+                    trackCTAClick('plan_offsite_mobile_menu')
+                    whatsappActions.proposal()
+                  }}
+                >
                   Plan My Offsite
                 </Button>
               </div>
@@ -260,9 +307,8 @@ function HeroSection() {
   }
 
   const handleFindVenues = () => {
-    // In a real app, this would navigate to venues page with filters
-    console.log('Finding venues with criteria:', formData)
-    alert(`Searching for venues in ${formData.location} for ${formData.teamSize} with ${formData.budget} budget`)
+    trackCTAClick('find_venues', `${formData.location}-${formData.teamSize}-${formData.budget}`)
+    formActions.handleVenueFinder(formData)
   }
 
   return (
@@ -593,14 +639,37 @@ function CTASection() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="bg-primary hover:bg-primary/90">
+          <Button 
+            size="lg" 
+            className="bg-primary hover:bg-primary/90"
+            onClick={() => {
+              trackCTAClick('get_custom_proposal_main')
+              whatsappActions.proposal()
+            }}
+          >
             Get Custom Proposal
           </Button>
-          <Button variant="outline" size="lg" className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="flex items-center gap-2"
+            onClick={() => {
+              trackCTAClick('whatsapp_planner_main')
+              whatsappActions.planner()
+            }}
+          >
             <MessageCircle className="h-5 w-5" />
             WhatsApp a Planner
           </Button>
-          <Button variant="outline" size="lg" className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="flex items-center gap-2"
+            onClick={() => {
+              trackCTAClick('schedule_call_main')
+              phoneActions.scheduleCall()
+            }}
+          >
             <Phone className="h-5 w-5" />
             Schedule a Call
           </Button>
@@ -707,15 +776,38 @@ function StickyMobileCTA() {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4 md:hidden z-50">
       <div className="flex space-x-2">
-        <Button variant="outline" size="sm" className="flex-1 flex items-center justify-center gap-2">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="flex-1 flex items-center justify-center gap-2"
+          onClick={() => {
+            trackCTAClick('whatsapp_sticky_mobile')
+            whatsappActions.general()
+          }}
+        >
           <MessageCircle className="h-4 w-4" />
           WhatsApp
         </Button>
-        <Button variant="outline" size="sm" className="flex-1 flex items-center justify-center gap-2">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="flex-1 flex items-center justify-center gap-2"
+          onClick={() => {
+            trackCTAClick('call_sticky_mobile')
+            phoneActions.general()
+          }}
+        >
           <Phone className="h-4 w-4" />
           Call
         </Button>
-        <Button size="sm" className="flex-1 bg-primary hover:bg-primary/90">
+        <Button 
+          size="sm" 
+          className="flex-1 bg-primary hover:bg-primary/90"
+          onClick={() => {
+            trackCTAClick('plan_sticky_mobile')
+            whatsappActions.proposal()
+          }}
+        >
           Plan
         </Button>
       </div>

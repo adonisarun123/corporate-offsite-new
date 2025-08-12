@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Clock, Users, MapPin, Target, Shield, Zap } from 'lucide-react'
+import { whatsappActions, trackCTAClick } from '../utils/ctaActions.js'
 
 export function ActivityCard({ activity }) {
   const {
@@ -103,10 +104,23 @@ export function ActivityCard({ activity }) {
         )}
         
         <div className="flex gap-2 pt-2">
-          <Button className="flex-1 bg-primary hover:bg-primary/90">
+          <Button 
+            className="flex-1 bg-primary hover:bg-primary/90"
+            onClick={() => {
+              trackCTAClick('add_to_itinerary', name)
+              whatsappActions.general(`I'd like to include ${name} activity in our offsite itinerary. Can you help me with the details and pricing?`)
+            }}
+          >
             Add to Itinerary
           </Button>
-          <Button variant="outline" className="flex-1">
+          <Button 
+            variant="outline" 
+            className="flex-1"
+            onClick={() => {
+              trackCTAClick('learn_more_activity', name)
+              whatsappActions.general(`I'd like to learn more about the ${name} activity. Can you provide more details?`)
+            }}
+          >
             Learn More
           </Button>
         </div>
