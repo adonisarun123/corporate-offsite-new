@@ -69,7 +69,7 @@ export default function ActivityDetailPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg" 
-                  className="bg-primary hover:bg-primary/90"
+                  className="bg-primary text-white hover:bg-primary/90"
                   onClick={() => {
                     trackCTAClick('add_activity_to_offsite', activity.name)
                     whatsappActions.general(`I'd like to include ${activity.name} in our corporate offsite. Can you help me with details and pricing?`)
@@ -335,7 +335,7 @@ export default function ActivityDetailPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-white text-primary hover:bg-white/90"
+              className="bg-white text-primary hover:bg-white/90 hover:text-primary"
               onClick={() => {
                 trackCTAClick('get_activity_proposal', activity.name)
                 whatsappActions.proposal(`${activity.name} activity for our corporate offsite`)

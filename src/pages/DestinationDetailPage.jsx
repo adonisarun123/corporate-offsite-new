@@ -52,7 +52,7 @@ export default function DestinationDetailPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg" 
-                  className="bg-primary hover:bg-primary/90"
+                  className="bg-primary text-white hover:bg-primary/90"
                   onClick={() => {
                     trackCTAClick('get_proposal_destination', destination.name)
                     whatsappActions.proposal(`${destination.name} offsite`)
@@ -265,7 +265,7 @@ export default function DestinationDetailPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-white text-primary hover:bg-white/90"
+              className="bg-white text-primary hover:bg-white/90 hover:text-primary"
               onClick={() => {
                 trackCTAClick('get_custom_proposal_destination', destination.name)
                 whatsappActions.proposal(`${destination.name} offsite for our team`)
