@@ -3,13 +3,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import ActivityCard from '../components/ActivityCard.jsx'
-import { Search, Filter, Clock, Users, MapPin, Star } from 'lucide-react'
+import { Search, Filter, Clock, Users, Target, Award, BookOpen, MessageCircle, Phone } from 'lucide-react'
+import { activities, getActivitiesByType } from '../data/activities.js'
+import { whatsappActions, trackCTAClick } from '../utils/ctaActions.js'
+import { Link } from 'react-router-dom'
 
 const activityCategories = [
-  { id: 'all', name: 'All Activities', count: 36 },
-  { id: 'leadership', name: 'Leadership', count: 12 },
-  { id: 'collaboration', name: 'Team Building', count: 15 },
-  { id: 'wellness', name: 'Wellness', count: 9 }
+  { id: 'all', name: 'All Activities', count: activities.length },
+  { id: 'leadership', name: 'Leadership', count: getActivitiesByType('leadership').length },
+  { id: 'collaboration', name: 'Team Building', count: getActivitiesByType('collaboration').length },
+  { id: 'wellness', name: 'Wellness', count: getActivitiesByType('wellness').length },
+  { id: 'communication', name: 'Communication', count: getActivitiesByType('communication').length },
+  { id: 'adventure', name: 'Adventure', count: getActivitiesByType('adventure').length },
+  { id: 'sales', name: 'Sales', count: getActivitiesByType('sales').length }
 ]
 
 const difficultyLevels = [
@@ -19,566 +25,17 @@ const difficultyLevels = [
   { id: 'hard', name: 'Challenging' }
 ]
 
-const sampleActivities = [
-  // Leadership Activities
-  {
-    id: 1,
-    title: "Leadership Challenge Course",
-    category: "leadership",
-    difficulty: "medium",
-    duration: "4 hours",
-    participants: "20-50 people",
-    location: "Outdoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop",
-    description: "Outdoor leadership development program with problem-solving challenges and team coordination exercises.",
-    learningOutcomes: ["Enhanced leadership skills", "Improved decision making", "Team coordination", "Problem solving"],
-    weatherDependent: true,
-    price: "₹2,500 per person"
-  },
-  {
-    id: 2,
-    title: "Executive Coaching Session",
-    category: "leadership",
-    difficulty: "hard",
-    duration: "5 hours",
-    participants: "10-20 people",
-    location: "Indoor",
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=300&fit=crop",
-    description: "Intensive executive coaching focused on leadership development, strategic thinking, and personal growth.",
-    learningOutcomes: ["Strategic thinking", "Leadership presence", "Executive skills", "Personal development"],
-    weatherDependent: false,
-    price: "₹4,500 per person"
-  },
-  {
-    id: 3,
-    title: "Leadership Simulation Game",
-    category: "leadership",
-    difficulty: "medium",
-    duration: "6 hours",
-    participants: "25-60 people",
-    location: "Indoor",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop",
-    description: "Business simulation game where teams navigate complex leadership scenarios and make strategic decisions.",
-    learningOutcomes: ["Strategic decision making", "Crisis management", "Team leadership", "Business acumen"],
-    weatherDependent: false,
-    price: "₹3,200 per person"
-  },
-  {
-    id: 4,
-    title: "360-Degree Leadership Assessment",
-    category: "leadership",
-    difficulty: "easy",
-    duration: "3 hours",
-    participants: "15-30 people",
-    location: "Indoor",
-    rating: 4.6,
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
-    description: "Comprehensive leadership assessment with peer feedback, self-reflection, and development planning.",
-    learningOutcomes: ["Self-awareness", "Leadership style", "Feedback skills", "Development planning"],
-    weatherDependent: false,
-    price: "₹2,800 per person"
-  },
-  {
-    id: 5,
-    title: "Crisis Leadership Workshop",
-    category: "leadership",
-    difficulty: "hard",
-    duration: "4 hours",
-    participants: "20-40 people",
-    location: "Indoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=400&h=300&fit=crop",
-    description: "High-pressure scenarios designed to develop crisis leadership skills and decision-making under stress.",
-    learningOutcomes: ["Crisis management", "Pressure handling", "Quick decision making", "Team coordination"],
-    weatherDependent: false,
-    price: "₹3,800 per person"
-  },
-  {
-    id: 6,
-    title: "Emotional Intelligence Training",
-    category: "leadership",
-    difficulty: "medium",
-    duration: "5 hours",
-    participants: "15-35 people",
-    location: "Indoor",
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop",
-    description: "Develop emotional intelligence skills essential for effective leadership and team management.",
-    learningOutcomes: ["Emotional awareness", "Empathy", "Social skills", "Self-regulation"],
-    weatherDependent: false,
-    price: "₹2,600 per person"
-  },
-
-  // Collaboration/Team Building Activities
-  {
-    id: 7,
-    title: "Innovation Workshop",
-    category: "collaboration",
-    difficulty: "easy",
-    duration: "6 hours",
-    participants: "15-30 people",
-    location: "Indoor",
-    rating: 4.6,
-    image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&h=300&fit=crop",
-    description: "Interactive workshop focused on creative thinking, innovation methodologies, and collaborative problem-solving.",
-    learningOutcomes: ["Creative problem solving", "Innovation mindset", "Collaborative thinking", "Design thinking"],
-    weatherDependent: false,
-    price: "₹1,800 per person"
-  },
-  {
-    id: 8,
-    title: "Escape Room Challenge",
-    category: "collaboration",
-    difficulty: "medium",
-    duration: "3 hours",
-    participants: "15-25 people",
-    location: "Indoor",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
-    description: "Team-based puzzle solving and escape room challenges designed to improve communication and collaboration.",
-    learningOutcomes: ["Team communication", "Problem solving", "Time management", "Collaboration"],
-    weatherDependent: false,
-    price: "₹1,500 per person"
-  },
-  {
-    id: 9,
-    title: "Adventure Sports",
-    category: "collaboration",
-    difficulty: "hard",
-    duration: "6 hours",
-    participants: "20-40 people",
-    location: "Outdoor",
-    rating: 4.5,
-    image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop",
-    description: "Thrilling adventure sports including rock climbing, rappelling, and team challenges in natural settings.",
-    learningOutcomes: ["Trust building", "Risk management", "Team support", "Confidence building"],
-    weatherDependent: true,
-    price: "₹3,200 per person"
-  },
-  {
-    id: 10,
-    title: "Cooking Team Challenge",
-    category: "collaboration",
-    difficulty: "easy",
-    duration: "4 hours",
-    participants: "20-50 people",
-    location: "Indoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
-    description: "Collaborative cooking challenge where teams work together to create gourmet meals under time pressure.",
-    learningOutcomes: ["Team coordination", "Communication", "Time management", "Creative collaboration"],
-    weatherDependent: false,
-    price: "₹2,200 per person"
-  },
-  {
-    id: 11,
-    title: "Treasure Hunt Adventure",
-    category: "collaboration",
-    difficulty: "medium",
-    duration: "5 hours",
-    participants: "25-60 people",
-    location: "Outdoor",
-    rating: 4.6,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
-    description: "City-wide treasure hunt combining technology, problem-solving, and teamwork across multiple locations.",
-    learningOutcomes: ["Strategic thinking", "Team coordination", "Problem solving", "Navigation skills"],
-    weatherDependent: true,
-    price: "₹1,900 per person"
-  },
-  {
-    id: 12,
-    title: "Improv Theater Workshop",
-    category: "collaboration",
-    difficulty: "easy",
-    duration: "3 hours",
-    participants: "15-30 people",
-    location: "Indoor",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1507924538820-ede94a04019d?w=400&h=300&fit=crop",
-    description: "Improvisational theater exercises to build confidence, creativity, and spontaneous collaboration.",
-    learningOutcomes: ["Spontaneous thinking", "Confidence building", "Active listening", "Creative expression"],
-    weatherDependent: false,
-    price: "₹1,600 per person"
-  },
-  {
-    id: 13,
-    title: "Virtual Reality Team Missions",
-    category: "collaboration",
-    difficulty: "medium",
-    duration: "4 hours",
-    participants: "12-24 people",
-    location: "Indoor",
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1592478411213-6153e4ebc696?w=400&h=300&fit=crop",
-    description: "Cutting-edge VR team missions requiring coordination, communication, and strategic thinking.",
-    learningOutcomes: ["Digital collaboration", "Spatial awareness", "Team coordination", "Technology adaptation"],
-    weatherDependent: false,
-    price: "₹3,500 per person"
-  },
-  {
-    id: 14,
-    title: "Music Band Formation",
-    category: "collaboration",
-    difficulty: "easy",
-    duration: "6 hours",
-    participants: "20-40 people",
-    location: "Indoor",
-    rating: 4.5,
-    image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
-    description: "Form teams to create and perform music together, fostering creativity and synchronized teamwork.",
-    learningOutcomes: ["Creative collaboration", "Rhythm and timing", "Performance confidence", "Artistic expression"],
-    weatherDependent: false,
-    price: "₹2,400 per person"
-  },
-  {
-    id: 15,
-    title: "Dragon Boat Racing",
-    category: "collaboration",
-    difficulty: "medium",
-    duration: "4 hours",
-    participants: "30-60 people",
-    location: "Outdoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop",
-    description: "Traditional dragon boat racing requiring perfect synchronization, communication, and team spirit.",
-    learningOutcomes: ["Synchronization", "Team rhythm", "Physical coordination", "Competitive spirit"],
-    weatherDependent: true,
-    price: "₹2,800 per person"
-  },
-  {
-    id: 16,
-    title: "Design Thinking Workshop",
-    category: "collaboration",
-    difficulty: "medium",
-    duration: "7 hours",
-    participants: "20-35 people",
-    location: "Indoor",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop",
-    description: "Human-centered design process workshop focusing on empathy, ideation, and prototyping.",
-    learningOutcomes: ["User empathy", "Creative ideation", "Prototyping", "Iterative thinking"],
-    weatherDependent: false,
-    price: "₹2,600 per person"
-  },
-  {
-    id: 17,
-    title: "Startup Pitch Competition",
-    category: "collaboration",
-    difficulty: "hard",
-    duration: "8 hours",
-    participants: "25-50 people",
-    location: "Indoor",
-    rating: 4.6,
-    image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400&h=300&fit=crop",
-    description: "Teams develop and pitch startup ideas, combining creativity, business acumen, and presentation skills.",
-    learningOutcomes: ["Business thinking", "Presentation skills", "Market analysis", "Team strategy"],
-    weatherDependent: false,
-    price: "₹2,900 per person"
-  },
-  {
-    id: 18,
-    title: "Robotics Team Challenge",
-    category: "collaboration",
-    difficulty: "hard",
-    duration: "6 hours",
-    participants: "16-32 people",
-    location: "Indoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=300&fit=crop",
-    description: "Build and program robots to complete team challenges, combining technical skills with collaboration.",
-    learningOutcomes: ["Technical collaboration", "Problem solving", "Programming basics", "Engineering thinking"],
-    weatherDependent: false,
-    price: "₹3,800 per person"
-  },
-  {
-    id: 19,
-    title: "Charity Project Challenge",
-    category: "collaboration",
-    difficulty: "medium",
-    duration: "5 hours",
-    participants: "30-80 people",
-    location: "Indoor/Outdoor",
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=300&fit=crop",
-    description: "Teams work together on meaningful charity projects, building community impact while strengthening bonds.",
-    learningOutcomes: ["Social impact", "Project management", "Community building", "Purpose-driven collaboration"],
-    weatherDependent: false,
-    price: "₹1,200 per person"
-  },
-  {
-    id: 20,
-    title: "Cultural Exchange Workshop",
-    category: "collaboration",
-    difficulty: "easy",
-    duration: "4 hours",
-    participants: "20-50 people",
-    location: "Indoor",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=300&fit=crop",
-    description: "Explore different cultures through interactive activities, food, and traditions to build inclusive teams.",
-    learningOutcomes: ["Cultural awareness", "Inclusion", "Global mindset", "Diversity appreciation"],
-    weatherDependent: false,
-    price: "₹1,800 per person"
-  },
-  {
-    id: 21,
-    title: "Sports Tournament",
-    category: "collaboration",
-    difficulty: "medium",
-    duration: "6 hours",
-    participants: "40-100 people",
-    location: "Outdoor",
-    rating: 4.5,
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
-    description: "Multi-sport tournament with various games designed to promote healthy competition and team spirit.",
-    learningOutcomes: ["Healthy competition", "Team spirit", "Physical fitness", "Sportsmanship"],
-    weatherDependent: true,
-    price: "₹1,500 per person"
-  },
-
-  // Wellness Activities
-  {
-    id: 22,
-    title: "Wellness Retreat",
-    category: "wellness",
-    difficulty: "easy",
-    duration: "8 hours",
-    participants: "10-40 people",
-    location: "Indoor/Outdoor",
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop",
-    description: "Comprehensive wellness program including yoga, meditation, mindfulness sessions, and stress management techniques.",
-    learningOutcomes: ["Stress management", "Work-life balance", "Mindfulness", "Team wellness"],
-    weatherDependent: false,
-    price: "₹2,200 per person"
-  },
-  {
-    id: 23,
-    title: "Mindfulness & Meditation",
-    category: "wellness",
-    difficulty: "easy",
-    duration: "3 hours",
-    participants: "15-50 people",
-    location: "Indoor/Outdoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    description: "Guided mindfulness and meditation sessions to reduce stress and improve mental clarity.",
-    learningOutcomes: ["Mental clarity", "Stress reduction", "Focus improvement", "Emotional balance"],
-    weatherDependent: false,
-    price: "₹1,500 per person"
-  },
-  {
-    id: 24,
-    title: "Yoga & Breathing Workshop",
-    category: "wellness",
-    difficulty: "easy",
-    duration: "4 hours",
-    participants: "20-60 people",
-    location: "Indoor/Outdoor",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1588286840104-8957b019727f?w=400&h=300&fit=crop",
-    description: "Yoga sessions combined with breathing techniques to promote physical and mental well-being.",
-    learningOutcomes: ["Physical flexibility", "Breathing techniques", "Body awareness", "Relaxation"],
-    weatherDependent: false,
-    price: "₹1,800 per person"
-  },
-  {
-    id: 25,
-    title: "Nutrition & Healthy Living",
-    category: "wellness",
-    difficulty: "easy",
-    duration: "3 hours",
-    participants: "25-75 people",
-    location: "Indoor",
-    rating: 4.6,
-    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&h=300&fit=crop",
-    description: "Interactive workshop on nutrition, healthy eating habits, and lifestyle choices for better well-being.",
-    learningOutcomes: ["Nutrition knowledge", "Healthy habits", "Lifestyle improvement", "Energy management"],
-    weatherDependent: false,
-    price: "₹1,200 per person"
-  },
-  {
-    id: 26,
-    title: "Stress Management Bootcamp",
-    category: "wellness",
-    difficulty: "medium",
-    duration: "5 hours",
-    participants: "15-35 people",
-    location: "Indoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
-    description: "Comprehensive stress management program with practical tools and techniques for workplace wellness.",
-    learningOutcomes: ["Stress identification", "Coping strategies", "Resilience building", "Work-life balance"],
-    weatherDependent: false,
-    price: "₹2,400 per person"
-  },
-  {
-    id: 27,
-    title: "Nature Therapy Walk",
-    category: "wellness",
-    difficulty: "easy",
-    duration: "4 hours",
-    participants: "20-50 people",
-    location: "Outdoor",
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop",
-    description: "Guided nature walks combined with mindfulness exercises to reconnect with nature and reduce stress.",
-    learningOutcomes: ["Nature connection", "Mindful walking", "Environmental awareness", "Mental restoration"],
-    weatherDependent: true,
-    price: "₹1,600 per person"
-  },
-  {
-    id: 28,
-    title: "Digital Detox Workshop",
-    category: "wellness",
-    difficulty: "medium",
-    duration: "6 hours",
-    participants: "15-40 people",
-    location: "Indoor/Outdoor",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop",
-    description: "Learn to disconnect from digital devices and reconnect with yourself and colleagues through analog activities.",
-    learningOutcomes: ["Digital awareness", "Offline engagement", "Present moment focus", "Real connections"],
-    weatherDependent: false,
-    price: "₹2,000 per person"
-  },
-  {
-    id: 29,
-    title: "Art Therapy Session",
-    category: "wellness",
-    difficulty: "easy",
-    duration: "4 hours",
-    participants: "12-30 people",
-    location: "Indoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
-    description: "Therapeutic art activities to express emotions, reduce stress, and promote mental well-being.",
-    learningOutcomes: ["Emotional expression", "Creative therapy", "Stress relief", "Self-discovery"],
-    weatherDependent: false,
-    price: "₹2,100 per person"
-  },
-  {
-    id: 30,
-    title: "Sleep & Recovery Workshop",
-    category: "wellness",
-    difficulty: "easy",
-    duration: "3 hours",
-    participants: "20-60 people",
-    location: "Indoor",
-    rating: 4.6,
-    image: "https://images.unsplash.com/photo-1520206183501-b80df61043c2?w=400&h=300&fit=crop",
-    description: "Learn about sleep hygiene, recovery techniques, and creating healthy sleep habits for better performance.",
-    learningOutcomes: ["Sleep optimization", "Recovery techniques", "Energy management", "Performance improvement"],
-    weatherDependent: false,
-    price: "₹1,400 per person"
-  },
-
-  // Additional Leadership Activities
-  {
-    id: 31,
-    title: "Public Speaking Mastery",
-    category: "leadership",
-    difficulty: "medium",
-    duration: "5 hours",
-    participants: "12-25 people",
-    location: "Indoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400&h=300&fit=crop",
-    description: "Intensive public speaking workshop to build confidence and communication skills for leaders.",
-    learningOutcomes: ["Public speaking", "Confidence building", "Communication skills", "Presentation mastery"],
-    weatherDependent: false,
-    price: "₹3,200 per person"
-  },
-  {
-    id: 32,
-    title: "Negotiation Skills Workshop",
-    category: "leadership",
-    difficulty: "hard",
-    duration: "6 hours",
-    participants: "16-30 people",
-    location: "Indoor",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop",
-    description: "Advanced negotiation techniques and strategies for business leaders and managers.",
-    learningOutcomes: ["Negotiation tactics", "Conflict resolution", "Persuasion skills", "Win-win thinking"],
-    weatherDependent: false,
-    price: "₹3,600 per person"
-  },
-  {
-    id: 33,
-    title: "Change Management Simulation",
-    category: "leadership",
-    difficulty: "hard",
-    duration: "7 hours",
-    participants: "20-45 people",
-    location: "Indoor",
-    rating: 4.9,
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop",
-    description: "Complex simulation exercise focusing on leading organizational change and transformation.",
-    learningOutcomes: ["Change leadership", "Transformation management", "Stakeholder engagement", "Adaptive leadership"],
-    weatherDependent: false,
-    price: "₹4,200 per person"
-  },
-  {
-    id: 34,
-    title: "Mentoring & Coaching Skills",
-    category: "leadership",
-    difficulty: "medium",
-    duration: "4 hours",
-    participants: "15-35 people",
-    location: "Indoor",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
-    description: "Develop mentoring and coaching skills to support team development and growth.",
-    learningOutcomes: ["Coaching techniques", "Mentoring skills", "Development planning", "Feedback delivery"],
-    weatherDependent: false,
-    price: "₹2,900 per person"
-  },
-  {
-    id: 35,
-    title: "Strategic Planning Workshop",
-    category: "leadership",
-    difficulty: "hard",
-    duration: "8 hours",
-    participants: "18-40 people",
-    location: "Indoor",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=400&h=300&fit=crop",
-    description: "Comprehensive strategic planning session with frameworks, tools, and real-world applications.",
-    learningOutcomes: ["Strategic thinking", "Planning frameworks", "Vision setting", "Goal alignment"],
-    weatherDependent: false,
-    price: "₹4,800 per person"
-  },
-  {
-    id: 36,
-    title: "Cross-Cultural Leadership",
-    category: "leadership",
-    difficulty: "medium",
-    duration: "5 hours",
-    participants: "20-50 people",
-    location: "Indoor",
-    rating: 4.6,
-    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=300&fit=crop",
-    description: "Develop leadership skills for managing diverse, multicultural teams in global environments.",
-    learningOutcomes: ["Cultural intelligence", "Global leadership", "Diversity management", "Inclusive leadership"],
-    weatherDependent: false,
-    price: "₹3,400 per person"
-  }
-]
-
 export default function ActivitiesPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedDifficulty, setSelectedDifficulty] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredActivities = sampleActivities.filter(activity => {
-    const matchesCategory = selectedCategory === 'all' || activity.category === selectedCategory
+  const filteredActivities = activities.filter(activity => {
+    const matchesCategory = selectedCategory === 'all' || activity.type === selectedCategory
     const matchesDifficulty = selectedDifficulty === 'all' || activity.difficulty === selectedDifficulty
-    const matchesSearch = activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         activity.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = activity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         activity.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         activity.framework?.toLowerCase().includes(searchTerm.toLowerCase())
     
     return matchesCategory && matchesDifficulty && matchesSearch
   })
@@ -592,8 +49,8 @@ export default function ActivitiesPage() {
             Team Building Activities
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Engaging activities designed to strengthen team bonds, develop leadership skills, 
-            and create lasting memories. Choose from our curated collection of proven team experiences.
+            Engaging activities designed to strengthen team bonds, develop leadership skills, and create lasting memories.
+            Each activity is mapped to proven learning frameworks for maximum impact.
           </p>
           
           {/* Search Bar */}
@@ -602,7 +59,7 @@ export default function ActivitiesPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                placeholder="Search activities..."
+                placeholder="Search activities by name, type, or learning framework..."
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -662,7 +119,7 @@ export default function ActivitiesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900">
-              {filteredActivities.length} Activities Found
+              {filteredActivities.length} Activities Available
             </h2>
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Filter className="h-4 w-4" />
@@ -672,88 +129,7 @@ export default function ActivitiesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredActivities.map((activity) => (
-              <Card key={activity.id} className="hover:shadow-lg transition-shadow overflow-hidden">
-                <div className="relative">
-                  <img 
-                    src={activity.image} 
-                    alt={activity.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <Badge className={`${
-                      activity.category === 'leadership' ? 'bg-purple-100 text-purple-800' :
-                      activity.category === 'collaboration' ? 'bg-blue-100 text-blue-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
-                      {activity.category}
-                    </Badge>
-                    <Badge variant={
-                      activity.difficulty === 'easy' ? 'secondary' :
-                      activity.difficulty === 'medium' ? 'default' : 'destructive'
-                    }>
-                      {activity.difficulty}
-                    </Badge>
-                  </div>
-                  {activity.weatherDependent && (
-                    <div className="absolute top-4 right-4">
-                      <Badge variant="outline" className="bg-white">
-                        Weather Dependent
-                      </Badge>
-                    </div>
-                  )}
-                  <div className="absolute bottom-4 right-4 flex items-center gap-1 bg-white px-2 py-1 rounded">
-                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-medium">{activity.rating}</span>
-                  </div>
-                </div>
-
-                <CardHeader>
-                  <CardTitle className="text-xl">{activity.title}</CardTitle>
-                  <CardDescription>{activity.description}</CardDescription>
-                </CardHeader>
-
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Activity Details */}
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-gray-400" />
-                        <span>{activity.duration}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-gray-400" />
-                        <span>{activity.participants}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-gray-400" />
-                        <span>{activity.location}</span>
-                      </div>
-                      <div className="font-semibold text-primary">
-                        {activity.price}
-                      </div>
-                    </div>
-
-                    {/* Learning Outcomes */}
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-2">Learning Outcomes:</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        {activity.learningOutcomes.slice(0, 2).map((outcome, index) => (
-                          <li key={index} className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                            {outcome}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 pt-4">
-                      <Button className="flex-1">Add to Itinerary</Button>
-                      <Button variant="outline" className="flex-1">Learn More</Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <EnhancedActivityCard key={activity.id} activity={activity} />
             ))}
           </div>
 
@@ -769,21 +145,129 @@ export default function ActivitiesPage() {
         </div>
       </section>
 
+      {/* Learning Framework Benefits */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <BookOpen className="h-12 w-12 text-primary mx-auto mb-4" />
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Science-Based Learning Approach
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our activities are designed around proven learning and development frameworks from leading experts
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Target className="h-12 w-12 text-primary mx-auto mb-4" />
+                <CardTitle>Proven Frameworks</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Each activity is built on established L&D frameworks like GROW coaching model, 
+                  Design Thinking, and Emotional Intelligence principles.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Award className="h-12 w-12 text-primary mx-auto mb-4" />
+                <CardTitle>Measurable Outcomes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Clear learning objectives and competency development mapped to specific 
+                  business skills and leadership capabilities.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Users className="h-12 w-12 text-primary mx-auto mb-4" />
+                <CardTitle>Expert Facilitation</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Professional facilitators certified in their respective methodologies 
+                  ensure optimal learning transfer and application.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Custom Activity Design */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Need a Custom Activity?
+          </h2>
+          <p className="text-xl text-gray-600 mb-8">
+            We can design bespoke activities tailored to your specific learning objectives, 
+            team dynamics, and business challenges.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg" 
+              className="bg-primary hover:bg-primary/90"
+              onClick={() => {
+                trackCTAClick('request_custom_activity')
+                whatsappActions.general('I\'d like to design a custom team building activity for our specific learning objectives. Can you help us create something unique?')
+              }}
+            >
+              Design Custom Activity
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => {
+                trackCTAClick('speak_learning_expert')
+                whatsappActions.general('I\'d like to speak with a learning and development expert about our team\'s specific needs and activity recommendations.')
+              }}
+            >
+              Speak with L&D Expert
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-16 bg-primary text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            Need a Custom Activity?
+          <h2 className="text-3xl font-bold mb-6">
+            Ready to Enhance Your Team?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Our team can design bespoke activities tailored to your specific objectives and team dynamics.
+            Let our activity experts help you select and customize the perfect combination 
+            of activities for your team's development goals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90">
-              Request Custom Activity
+            <Button 
+              size="lg" 
+              className="bg-white text-primary hover:bg-white/90"
+              onClick={() => {
+                trackCTAClick('activity_consultation')
+                whatsappActions.general('I need help selecting the right team building activities for our corporate offsite. Can you provide expert recommendations?')
+              }}
+            >
+              Get Activity Consultation
             </Button>
-            <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-primary">
-              Speak with Activity Expert
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="text-white border-white hover:bg-white hover:text-primary"
+              onClick={() => {
+                trackCTAClick('call_activity_expert')
+                phoneActions.general()
+              }}
+            >
+              <Phone className="h-5 w-5 mr-2" />
+              Call Activity Expert
             </Button>
           </div>
         </div>
@@ -792,3 +276,100 @@ export default function ActivitiesPage() {
   )
 }
 
+function EnhancedActivityCard({ activity }) {
+  const typeColors = {
+    leadership: 'bg-blue-100 text-blue-800',
+    collaboration: 'bg-green-100 text-green-800',
+    wellness: 'bg-purple-100 text-purple-800',
+    communication: 'bg-orange-100 text-orange-800',
+    adventure: 'bg-red-100 text-red-800',
+    sales: 'bg-indigo-100 text-indigo-800'
+  }
+
+  const difficultyColors = {
+    easy: 'bg-green-100 text-green-800',
+    medium: 'bg-yellow-100 text-yellow-800',
+    hard: 'bg-red-100 text-red-800'
+  }
+
+  return (
+    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group">
+      <div className="relative">
+        <img 
+          src={activity.image} 
+          alt={activity.name}
+          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <div className="absolute top-3 left-3 flex gap-2">
+          <Badge className={typeColors[activity.type] || 'bg-gray-100 text-gray-800'}>
+            {activity.type}
+          </Badge>
+          <Badge className={difficultyColors[activity.difficulty] || 'bg-gray-100 text-gray-800'}>
+            {activity.difficulty}
+          </Badge>
+        </div>
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
+          <div className="text-sm font-semibold text-gray-900">{activity.duration}</div>
+        </div>
+      </div>
+      
+      <CardHeader className="pb-3">
+        <CardTitle className="text-xl group-hover:text-primary transition-colors">
+          {activity.name}
+        </CardTitle>
+        <CardDescription className="text-gray-600">
+          {activity.description}
+        </CardDescription>
+      </CardHeader>
+      
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Users className="h-4 w-4" />
+            <span>{activity.teamSize}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <BookOpen className="h-4 w-4" />
+            <span className="font-medium">Framework:</span>
+            <span>{activity.framework}</span>
+          </div>
+        </div>
+        
+        {activity.learningOutcomes && activity.learningOutcomes.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium text-gray-900 flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              Key Outcomes:
+            </h4>
+            <ul className="text-sm text-gray-600 space-y-1">
+              {activity.learningOutcomes.slice(0, 2).map((outcome, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <div className="h-1.5 w-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+                  {outcome}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
+        <div className="flex gap-2 pt-2">
+          <Link to={`/activities/${activity.slug}`} className="flex-1">
+            <Button className="w-full bg-primary hover:bg-primary/90">
+              Learn More
+            </Button>
+          </Link>
+          <Button 
+            variant="outline" 
+            className="flex-1"
+            onClick={() => {
+              trackCTAClick('add_activity', activity.name)
+              whatsappActions.general(`I'd like to include ${activity.name} in our offsite. Can you provide details and pricing?`)
+            }}
+          >
+            Add to Offsite
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
