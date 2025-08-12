@@ -165,7 +165,7 @@ const VenueDetailPage = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 size="lg" 
-                className="bg-white text-primary hover:bg-white/90 hover:text-primary font-semibold shadow-lg"
+                className="bg-white !text-blue-600 hover:bg-white/90 hover:!text-blue-700 font-semibold shadow-lg border-0"
                 onClick={() => {
                   trackCTAClick('get_venue_quote', venue.name)
                   whatsappActions.quote(`${venue.name} in ${destination.name}`)
@@ -176,7 +176,7 @@ const VenueDetailPage = () => {
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="text-white border-white border-2 hover:bg-white hover:text-primary font-semibold shadow-lg"
+                className="!text-white border-white border-2 hover:bg-white hover:!text-blue-600 font-semibold shadow-lg bg-transparent"
                 onClick={() => {
                   trackCTAClick('call_venue_expert', venue.name)
                   phoneActions.general()
@@ -449,7 +449,7 @@ const VenueDetailPage = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-white text-primary hover:bg-white/90 hover:text-primary"
+              className="bg-white !text-blue-600 hover:bg-white/90 hover:!text-blue-700 font-semibold border-0"
               onClick={() => {
                 trackCTAClick('book_venue_now', venue.name)
                 whatsappActions.proposal(`${venue.name} in ${destination.name} for our corporate offsite`)
@@ -460,7 +460,7 @@ const VenueDetailPage = () => {
             <Button 
               variant="outline" 
               size="lg" 
-              className="text-white border-white hover:bg-white hover:text-primary"
+              className="!text-white border-white border-2 hover:bg-white hover:!text-blue-600 font-semibold bg-transparent"
               onClick={() => {
                 trackCTAClick('compare_venues', venue.name)
                 whatsappActions.general(`I'd like to compare ${venue.name} with other venues in ${destination.name}`)
