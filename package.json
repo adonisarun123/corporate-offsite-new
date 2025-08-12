@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "build:seo": "npm run build && node scripts/prerender.js",
+    "build:seo-deploy": "npm run build && npm run prerender && node scripts/deploy-seo.js",
     "prerender": "node scripts/prerender.js",
+    "deploy-seo": "node scripts/deploy-seo.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
