@@ -384,10 +384,6 @@ export const destinations = [
   }
 ]
 
-export const getDestinationBySlug = (slug) => {
-  return destinations.find(dest => dest.slug === slug)
-}
-
 export const getDestinationsByRegion = (region) => {
   return destinations.filter(dest => dest.region === region)
 }

@@ -2,9 +2,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { MapPin, Users, Star, Wifi, Car, Coffee, Utensils } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { whatsappActions, trackCTAClick } from '../utils/ctaActions.js'
 
-export function VenueCard({ venue }) {
+export function VenueCard({ venue, destinationSlug = null }) {
   const {
     name,
     location,
@@ -25,6 +26,11 @@ export function VenueCard({ venue }) {
     catering: <Utensils className="h-4 w-4" />,
     coffee: <Coffee className="h-4 w-4" />
   }
+
+  // Generate venue slug
+  const venueSlug = name.toLowerCase()
+    .replace(/[^a-z0-9 ]/g, '')
+    .replace(/ +/g, '-')
 
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group">
@@ -109,16 +115,30 @@ export function VenueCard({ venue }) {
           >
             Get Quote
           </Button>
-          <Button 
-            variant="outline" 
-            className="flex-1"
-            onClick={() => {
-              trackCTAClick('view_details_venue', name)
-              whatsappActions.general(`I'd like more details about ${name} in ${location}`)
-            }}
-          >
-            View Details
-          </Button>
+          {destinationSlug ? (
+            <Link to={`/destinations/${destinationSlug}/venues/${venueSlug}`} className="flex-1">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  trackCTAClick('view_venue_details', name)
+                }}
+              >
+                View Details
+              </Button>
+            </Link>
+          ) : (
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={() => {
+                trackCTAClick('view_details_venue', name)
+                whatsappActions.general(`I'd like more details about ${name} in ${location}`)
+              }}
+            >
+              View Details
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -10,6 +10,7 @@ import PackageCard from './components/PackageCard.jsx'
 import TestimonialCard from './components/TestimonialCard.jsx'
 import DestinationsPage from './pages/DestinationsPage.jsx'
 import DestinationDetailPage from './pages/DestinationDetailPage.jsx'
+import VenueDetailPage from './pages/VenueDetailPage.jsx'
 import VenuesPage from './pages/VenuesPage.jsx'
 import ActivitiesPage from './pages/ActivitiesPage.jsx'
 import ActivityDetailPage from './pages/ActivityDetailPage.jsx'
@@ -900,6 +901,7 @@ function App() {
           } />
           <Route path="/destinations" element={<DestinationsPage />} />
           <Route path="/destinations/:slug" element={<DestinationDetailPage />} />
+          <Route path="/destinations/:destinationSlug/venues/:venueSlug" element={<VenueDetailPage />} />
           <Route path="/venues" element={<VenuesPage />} />
           <Route path="/activities" element={<ActivitiesPage />} />
           <Route path="/activities/:slug" element={<ActivityDetailPage />} />

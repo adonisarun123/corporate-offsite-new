@@ -4,12 +4,12 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import VenueCard from '../components/VenueCard.jsx'
 import { MapPin, Clock, Users, DollarSign, Star, Plane, Calendar, CheckCircle, MessageCircle, Phone } from 'lucide-react'
-import { getDestinationBySlug } from '../data/destinations.js'
+import { destinations } from '../data/destinations.js'
 import { whatsappActions, phoneActions, trackCTAClick } from '../utils/ctaActions.js'
 
 export default function DestinationDetailPage() {
   const { slug } = useParams()
-  const destination = getDestinationBySlug(slug)
+  const destination = destinations.find(dest => dest.slug === slug)
 
   if (!destination) {
     return (
@@ -252,6 +252,32 @@ export default function DestinationDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* Featured Venues */}
+      {destination.venues && destination.venues.length > 0 && (
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Top Venues in {destination.name}
+              </h2>
+              <p className="text-xl text-gray-600">
+                Handpicked venues that offer exceptional facilities for corporate offsites
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {destination.venues.map((venue, index) => (
+                <VenueCard 
+                  key={index} 
+                  venue={venue} 
+                  destinationSlug={destination.slug}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-16 bg-primary text-white">
