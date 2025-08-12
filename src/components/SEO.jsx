@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async'
+import DocumentHead from './DocumentHead'
 
 const SEO = ({
   title,
@@ -16,14 +17,32 @@ const SEO = ({
   const defaultImage = 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&h=630&fit=crop'
   const siteUrl = 'https://corporate-offsite-experts.com'
 
-  const pageTitle = title ? `${title} | ${siteTitle}` : siteTitle
+  const pageTitle = title ? `${title}` : siteTitle  // Remove duplicate site title
   const pageDescription = description || siteDescription
   const pageImage = image || defaultImage
   const pageUrl = url ? `${siteUrl}${url}` : siteUrl
   const canonicalUrl = canonical ? `${siteUrl}${canonical}` : pageUrl
 
+  // Debug logging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('SEO Component Rendered:', {
+      pageTitle,
+      pageDescription: pageDescription.substring(0, 100) + '...',
+      url: pageUrl
+    })
+  }
+
   return (
-    <Helmet>
+    <>
+      <DocumentHead
+        title={pageTitle}
+        description={pageDescription}
+        keywords={keywords}
+        image={pageImage}
+        url={pageUrl}
+        structuredData={structuredData}
+      />
+      <Helmet>
       {/* Basic Meta Tags */}
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
@@ -83,6 +102,7 @@ const SEO = ({
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
       <link rel="manifest" href="/site.webmanifest" />
     </Helmet>
+    </>
   )
 }
 
