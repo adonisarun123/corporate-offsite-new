@@ -1,82 +1,55 @@
+// src/components/SEO.jsx
 import { Helmet } from 'react-helmet-async'
-import DocumentHead from './DocumentHead'
+import DocumentHead from './DocumentHead.jsx'
 
-const SEO = ({
-  title,
-  description,
-  keywords,
-  image,
-  url,
+export default function SEO({
+  title = 'Corporate Offsite Experts - Premium Team Building & Retreat Solutions',
+  description = 'Plan unforgettable corporate offsites with expert guidance. Premium venues, team building activities, and seamless event management across India & Southeast Asia.',
+  canonical,
+  image = 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&h=630&fit=crop',
+  keywords = 'corporate offsite, team building, corporate retreat, venue booking, event planning, team activities, leadership training, corporate events, India, Southeast Asia',
+  schemaMarkup,
   type = 'website',
-  article = null,
-  structuredData = null,
-  canonical = null
-}) => {
-  const siteTitle = 'Corporate Offsite Experts - Premium Team Building & Retreat Solutions'
-  const siteDescription = 'Plan unforgettable corporate offsites with our expert team. Premium venues, team building activities, and seamless event management across India & Southeast Asia.'
-  const defaultImage = 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&h=630&fit=crop'
-  const siteUrl = 'https://corporate-offsite-experts.com'
-
-  const pageTitle = title ? `${title}` : siteTitle  // Remove duplicate site title
-  const pageDescription = description || siteDescription
-  const pageImage = image || defaultImage
-  const pageUrl = url ? `${siteUrl}${url}` : siteUrl
-  const canonicalUrl = canonical ? `${siteUrl}${canonical}` : pageUrl
-
-  // Debug logging
-  if (process.env.NODE_ENV === 'development') {
-    console.log('SEO Component Rendered:', {
-      pageTitle,
-      pageDescription: pageDescription.substring(0, 100) + '...',
-      url: pageUrl
-    })
-  }
-
+  article = null
+}) {
+  const baseUrl = 'https://corporate-offsite-experts.com'
+  const fullCanonical = canonical ? (canonical.startsWith('http') ? canonical : `${baseUrl}${canonical}`) : null
+  
   return (
     <>
+      {/* DocumentHead for immediate DOM updates */}
       <DocumentHead
-        title={pageTitle}
-        description={pageDescription}
+        title={title}
+        description={description}
         keywords={keywords}
-        image={pageImage}
-        url={pageUrl}
-        structuredData={structuredData}
+        image={image}
+        url={fullCanonical || `${baseUrl}${canonical || ''}`}
+        structuredData={schemaMarkup}
       />
-      <Helmet>
-      {/* Basic Meta Tags */}
-      <title>{pageTitle}</title>
-      <meta name="description" content={pageDescription} />
+      
+      {/* Helmet for additional meta tags and SSR support */}
+      <Helmet prioritizeSeoTags>
+      <title>{title}</title>
+      <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       <meta name="robots" content="index, follow" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta charset="UTF-8" />
-      
-      {/* Canonical URL */}
-      <link rel="canonical" href={canonicalUrl} />
+      {fullCanonical && <link rel="canonical" href={fullCanonical} />}
 
-      {/* Open Graph Tags */}
+      {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
-      <meta property="og:title" content={pageTitle} />
-      <meta property="og:description" content={pageDescription} />
-      <meta property="og:image" content={pageImage} />
-      <meta property="og:url" content={pageUrl} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      {image && <meta property="og:image" content={image} />}
+      {fullCanonical && <meta property="og:url" content={fullCanonical} />}
       <meta property="og:site_name" content="Corporate Offsite Experts" />
-      <meta property="og:locale" content="en_US" />
 
-      {/* Twitter Card Tags */}
+      {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={pageTitle} />
-      <meta name="twitter:description" content={pageDescription} />
-      <meta name="twitter:image" content={pageImage} />
-      <meta name="twitter:site" content="@CorpOffsiteExp" />
-      <meta name="twitter:creator" content="@CorpOffsiteExp" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      {image && <meta name="twitter:image" content={image} />}
 
-      {/* Additional Meta Tags */}
-      <meta name="author" content="Corporate Offsite Experts" />
-      <meta name="theme-color" content="#3b82f6" />
-      <meta name="msapplication-TileColor" content="#3b82f6" />
-
-      {/* Article specific tags */}
+      {/* Article specific meta tags */}
       {article && (
         <>
           <meta property="article:published_time" content={article.publishedTime} />
@@ -89,9 +62,9 @@ const SEO = ({
       )}
 
       {/* Structured Data */}
-      {structuredData && (
+      {schemaMarkup && (
         <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
+          {JSON.stringify(schemaMarkup)}
         </script>
       )}
 
@@ -101,9 +74,10 @@ const SEO = ({
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
       <link rel="manifest" href="/site.webmanifest" />
+      
+      {/* Theme color */}
+      <meta name="theme-color" content="#3b82f6" />
     </Helmet>
     </>
   )
 }
-
-export default SEO
