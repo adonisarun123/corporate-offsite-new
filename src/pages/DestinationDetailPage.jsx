@@ -159,48 +159,6 @@ export default function DestinationDetailPage() {
         </div>
       </section>
 
-      {/* Venues Section */}
-      {destination.venues && destination.venues.length > 0 && (
-        <section className="py-16 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Featured Venues in {destination.name}
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Handpicked venues that perfectly capture the essence of {destination.name} while providing 
-                world-class facilities for your corporate offsite.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {destination.venues.map((venue, index) => (
-                <VenueCard 
-                  key={index} 
-                  venue={{
-                    ...venue,
-                    pros: ["Premium location", "Excellent service", "Modern facilities"]
-                  }} 
-                />
-              ))}
-            </div>
-
-            <div className="text-center mt-12">
-              <Button 
-                variant="outline" 
-                size="lg"
-                onClick={() => {
-                  trackCTAClick('view_all_venues_destination', destination.name)
-                  whatsappActions.general(`I'd like to see all available venues in ${destination.name} for our corporate offsite.`)
-                }}
-              >
-                View All Venues in {destination.name}
-              </Button>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Why Choose This Destination */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
