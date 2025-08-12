@@ -12,7 +12,10 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    host: true
+    host: true,
+    historyApiFallback: {
+      index: '/index.html'
+    }
   },
   build: {
     outDir: 'dist',
