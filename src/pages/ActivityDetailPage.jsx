@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Button } from '@/components/ui/button.jsx'
+import SEO from '../components/SEO.jsx'
 import { Clock, Users, DollarSign, CheckCircle, Target, BookOpen, Award, MessageCircle, Phone, Calendar, MapPin, Shield } from 'lucide-react'
 import { getActivityBySlug } from '../data/activities.js'
 import { whatsappActions, phoneActions, trackCTAClick } from '../utils/ctaActions.js'
@@ -13,6 +14,11 @@ export default function ActivityDetailPage() {
   if (!activity) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <SEO
+          title="Activity Not Found"
+          description="The team building activity you're looking for doesn't exist."
+          url={`/activities/${slug}`}
+        />
         <Card className="max-w-md mx-auto">
           <CardContent className="text-center py-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Activity Not Found</h2>
@@ -39,8 +45,52 @@ export default function ActivityDetailPage() {
     hard: 'bg-red-100 text-red-800'
   }
 
+  // Generate structured data for the activity
+  const activityStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": activity.name,
+    "description": activity.longDescription || activity.description,
+    "image": activity.heroImage || activity.image,
+    "url": `https://corporate-offsite-experts.com/activities/${activity.slug}`,
+    "eventAttendanceMode": activity.indoor ? "OfflineEventAttendanceMode" : "MixedEventAttendanceMode",
+    "eventStatus": "EventScheduled",
+    "maximumAttendeeCapacity": activity.teamSize,
+    "duration": activity.duration,
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Corporate teams"
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "Corporate Offsite Experts",
+      "url": "https://corporate-offsite-experts.com"
+    },
+    "offers": {
+      "@type": "Offer",
+      "description": `${activity.name} team building activity`,
+      "price": activity.price,
+      "priceCurrency": "INR"
+    },
+    "educationalLevel": activity.difficulty,
+    "teaches": activity.learningOutcomes,
+    "skills": activity.keyCompetencies,
+    "location": {
+      "@type": "Place",
+      "name": activity.locations?.join(", ") || "Multiple locations available"
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={`${activity.name} - Corporate Team Building Activity`}
+        description={`${activity.description} Duration: ${activity.duration}. Team size: ${activity.teamSize}. Framework: ${activity.framework}. Perfect for ${activity.idealFor?.join(', ')}.`}
+        keywords={`${activity.name}, team building, ${activity.type}, corporate training, ${activity.framework}, ${activity.keyCompetencies?.join(', ')}, ${activity.locations?.join(', ')}`}
+        image={activity.heroImage || activity.image}
+        url={`/activities/${activity.slug}`}
+        structuredData={activityStructuredData}
+      />
       {/* Hero Section */}
       <section className="relative h-96 bg-gray-900">
         <img 

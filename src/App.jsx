@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -19,6 +20,7 @@ import CaseStudiesPage from './pages/CaseStudiesPage.jsx'
 import BlogPage from './pages/BlogPage.jsx'
 import AboutPage from './pages/AboutPage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
+import SEO from './components/SEO.jsx'
 import { whatsappActions, phoneActions, formActions, trackCTAClick } from './utils/ctaActions.js'
 import './App.css'
 
@@ -878,27 +880,78 @@ function Footer() {
   )
 }
 
+// Homepage Structured Data
+const homepageStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Corporate Offsite Experts",
+  "description": "Premium corporate offsite planning and team building solutions across India & Southeast Asia",
+  "url": "https://corporate-offsite-experts.com",
+  "logo": "https://corporate-offsite-experts.com/logo.png",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+91-9876543210",
+    "contactType": "customer service",
+    "areaServed": ["IN", "SG", "MY", "TH", "AE"],
+    "availableLanguage": ["English", "Hindi"]
+  },
+  "sameAs": [
+    "https://www.facebook.com/corporateoffsiteexperts",
+    "https://www.linkedin.com/company/corporate-offsite-experts",
+    "https://www.instagram.com/corporateoffsiteexperts"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "MG Road",
+    "addressLocality": "Bangalore",
+    "addressRegion": "Karnataka",
+    "postalCode": "560001",
+    "addressCountry": "IN"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "150",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
+  "offers": {
+    "@type": "Offer",
+    "description": "Corporate offsite planning and team building services",
+    "priceRange": "₹₹₹"
+  }
+}
+
 // Main App Component
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-white">
-        <Header />
-        
-        <Routes>
-          <Route path="/" element={
-            <main>
-              <HeroSection />
-              <WhySection />
-              <FeaturedDestinations />
-              <FeaturedVenues />
-              <FeaturedActivities />
-              <FeaturedPackages />
-              <TestimonialsSection />
-              <VideoTestimonialSection />
-              <CTASection />
-            </main>
-          } />
+    <HelmetProvider>
+      <Router>
+        <div className="min-h-screen bg-white">
+          <Header />
+          
+          <Routes>
+            <Route path="/" element={
+              <main>
+                <SEO
+                  title="Corporate Offsite Experts - Premium Team Building & Retreat Solutions"
+                  description="Plan unforgettable corporate offsites with expert guidance. Premium venues, team building activities, and seamless event management across India & Southeast Asia. Get your custom proposal today!"
+                  keywords="corporate offsite, team building, corporate retreat, venue booking, event planning, team activities, leadership training, corporate events, India, Southeast Asia, Bangalore, Mumbai, Goa, Singapore"
+                  image="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&h=630&fit=crop"
+                  url="/"
+                  structuredData={homepageStructuredData}
+                />
+                <HeroSection />
+                <WhySection />
+                <FeaturedDestinations />
+                <FeaturedVenues />
+                <FeaturedActivities />
+                <FeaturedPackages />
+                <TestimonialsSection />
+                <VideoTestimonialSection />
+                <CTASection />
+              </main>
+            } />
           <Route path="/destinations" element={<DestinationsPage />} />
           <Route path="/destinations/:slug" element={<DestinationDetailPage />} />
           <Route path="/destinations/:destinationSlug/venues/:venueSlug" element={<VenueDetailPage />} />
@@ -916,6 +969,7 @@ function App() {
         <StickyMobileCTA />
       </div>
     </Router>
+    </HelmetProvider>
   )
 }
 

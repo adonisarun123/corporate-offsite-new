@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Button } from '@/components/ui/button.jsx'
+import SEO from '../components/SEO.jsx'
 import { MapPin, Star, Users, Calendar, Thermometer, Plane } from 'lucide-react'
 import { destinations } from '../data/destinations.js'
 import { whatsappActions, trackCTAClick } from '../utils/ctaActions.js'
@@ -9,6 +10,13 @@ import { Link } from 'react-router-dom'
 export default function DestinationsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Corporate Offsite Destinations - India & Southeast Asia"
+        description="Explore premium corporate offsite destinations across India & Southeast Asia. From Bangalore's tech hub to Bali's serene landscapes, find the perfect location for your team retreat."
+        keywords="corporate offsite destinations, team retreat locations, India offsite venues, Southeast Asia corporate travel, Bangalore offsite, Mumbai retreat, Goa team building, Singapore corporate events, Bali offsite, Thailand retreat"
+        image="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&h=630&fit=crop"
+        url="/destinations"
+      />
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -180,8 +188,8 @@ function DestinationCard({ destination }) {
         />
         {destination.badge && (
           <Badge className="absolute top-3 left-3 bg-primary text-white">
-            {destination.badge}
-          </Badge>
+          {destination.badge}
+        </Badge>
         )}
         <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
           <div className="text-sm font-semibold text-gray-900">
@@ -208,7 +216,7 @@ function DestinationCard({ destination }) {
         <CardDescription className="text-gray-600">
           {destination.description}
         </CardDescription>
-        
+      
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Calendar className="h-4 w-4" />
@@ -225,19 +233,19 @@ function DestinationCard({ destination }) {
             <h4 className="text-sm font-medium text-gray-900">Highlights:</h4>
             <div className="flex flex-wrap gap-1">
               {destination.highlights.slice(0, 3).map((highlight, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {highlight}
-                </Badge>
-              ))}
-            </div>
+              <Badge key={index} variant="outline" className="text-xs">
+                {highlight}
+              </Badge>
+            ))}
           </div>
+        </div>
         )}
         
         <div className="flex gap-2 pt-2">
           <Link to={`/destinations/${destination.slug}`} className="flex-1">
             <Button className="w-full bg-primary hover:bg-primary/90">
-              Explore {destination.name}
-            </Button>
+            Explore {destination.name}
+          </Button>
           </Link>
           <Button 
             variant="outline" 

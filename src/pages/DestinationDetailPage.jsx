@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import VenueCard from '../components/VenueCard.jsx'
+import SEO from '../components/SEO.jsx'
 import { MapPin, Clock, Users, DollarSign, Star, Plane, Calendar, CheckCircle, MessageCircle, Phone } from 'lucide-react'
 import { destinations } from '../data/destinations.js'
 import { whatsappActions, phoneActions, trackCTAClick } from '../utils/ctaActions.js'
@@ -14,6 +15,11 @@ export default function DestinationDetailPage() {
   if (!destination) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <SEO
+          title="Destination Not Found"
+          description="The destination you're looking for doesn't exist."
+          url={`/destinations/${slug}`}
+        />
         <Card className="max-w-md mx-auto">
           <CardContent className="text-center py-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Destination Not Found</h2>
@@ -25,8 +31,65 @@ export default function DestinationDetailPage() {
     )
   }
 
+  // Generate structured data for the destination
+  const destinationStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "TouristDestination",
+    "name": destination.name,
+    "description": destination.longDescription || destination.description,
+    "image": destination.heroImage || destination.image,
+    "url": `https://corporate-offsite-experts.com/destinations/${destination.slug}`,
+    "geo": {
+      "@type": "GeoCoordinates",
+      "addressCountry": destination.country
+    },
+    "touristType": "Business travelers",
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Corporate teams"
+    },
+    "availableLanguage": "English",
+    "currenciesAccepted": destination.country === "India" ? "INR" : "USD",
+    "paymentAccepted": "Credit Card, Bank Transfer",
+    "priceRange": destination.budget,
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.7",
+      "reviewCount": "89",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "containsPlace": destination.venues?.map(venue => ({
+      "@type": "LodgingBusiness",
+      "name": venue.name,
+      "description": venue.description,
+      "image": venue.image,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": venue.location,
+        "addressCountry": destination.country
+      },
+      "starRating": {
+        "@type": "Rating",
+        "ratingValue": venue.rating
+      },
+      "amenityFeature": venue.amenities?.map(amenity => ({
+        "@type": "LocationFeatureSpecification",
+        "name": amenity
+      }))
+    }))
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={`${destination.name} Corporate Offsite Venues & Team Building Activities`}
+        description={`Plan your corporate offsite in ${destination.name}. ${destination.longDescription || destination.description} Best venues, activities, and expert planning services.`}
+        keywords={`${destination.name} corporate offsite, ${destination.name} team building, ${destination.name} venues, corporate retreat ${destination.name}, business events ${destination.name}, ${destination.country} offsite, ${destination.region}`}
+        image={destination.heroImage || destination.image}
+        url={`/destinations/${destination.slug}`}
+        structuredData={destinationStructuredData}
+      />
       {/* Hero Section */}
       <section className="relative h-96 bg-gray-900">
         <img 

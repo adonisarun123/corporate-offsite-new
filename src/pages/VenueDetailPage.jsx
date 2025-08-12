@@ -3,6 +3,7 @@ import { ArrowLeft, MapPin, Users, Star, Wifi, Car, Coffee, Dumbbell, Utensils, 
 import { Card, CardContent } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Badge } from '../components/ui/badge'
+import SEO from '../components/SEO'
 import { destinations } from '../data/destinations'
 import { whatsappActions, phoneActions, trackCTAClick } from '../utils/ctaActions'
 
@@ -26,6 +27,11 @@ const VenueDetailPage = () => {
   if (!destination) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <SEO
+          title="Destination Not Found"
+          description="The destination you're looking for doesn't exist."
+          url={`/destinations/${destinationSlug}/venues/${venueSlug}`}
+        />
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Destination Not Found</h1>
           <Link to="/destinations" className="text-primary hover:underline">
@@ -47,6 +53,11 @@ const VenueDetailPage = () => {
   if (!venue) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <SEO
+          title="Venue Not Found"
+          description={`The venue you're looking for in ${destination.name} doesn't exist.`}
+          url={`/destinations/${destinationSlug}/venues/${venueSlug}`}
+        />
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Venue Not Found</h1>
           <Link to={`/destinations/${destinationSlug}`} className="text-primary hover:underline">
@@ -71,6 +82,55 @@ const VenueDetailPage = () => {
   }
 
   const priceDetails = getPriceRangeDetails(venue.priceRange)
+
+  // Generate structured data for the venue
+  const venueStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    "name": venue.name,
+    "description": `${venue.description} Perfect for corporate offsites and team building events in ${destination.name}.`,
+    "image": venue.image,
+    "url": `https://corporate-offsite-experts.com/destinations/${destinationSlug}/venues/${venueSlug}`,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": venue.location,
+      "addressLocality": destination.name,
+      "addressRegion": destination.region,
+      "addressCountry": destination.country
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "addressCountry": destination.country
+    },
+    "starRating": {
+      "@type": "Rating",
+      "ratingValue": venue.rating,
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "priceRange": venue.priceRange,
+    "currenciesAccepted": destination.country === "India" ? "INR" : "USD",
+    "paymentAccepted": "Credit Card, Bank Transfer",
+    "checkinTime": "14:00",
+    "checkoutTime": "12:00",
+    "amenityFeature": venue.amenities?.map(amenity => ({
+      "@type": "LocationFeatureSpecification",
+      "name": amenity,
+      "value": true
+    })),
+    "maximumAttendeeCapacity": venue.capacity,
+    "eventType": "Corporate Event",
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Corporate teams"
+    },
+    "offers": {
+      "@type": "Offer",
+      "description": `Corporate offsite packages at ${venue.name}`,
+      "priceRange": priceDetails.range,
+      "priceCurrency": destination.country === "India" ? "INR" : "USD"
+    }
+  }
 
   const venueFeatures = [
     "Professional conference rooms with state-of-the-art AV equipment",
@@ -106,6 +166,14 @@ const VenueDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={`${venue.name} - Corporate Offsite Venue in ${destination.name}`}
+        description={`Book ${venue.name} for your corporate offsite in ${destination.name}. ${venue.description} Professional facilities, expert planning, and seamless execution. Capacity: ${venue.capacity} people. Rating: ${venue.rating}/5.`}
+        keywords={`${venue.name}, ${destination.name} venue, corporate offsite ${destination.name}, ${venue.type}, business events ${destination.name}, team building venue, conference facilities, ${venue.amenities?.join(', ')}, ${destination.country} venues`}
+        image={venue.image}
+        url={`/destinations/${destinationSlug}/venues/${venueSlug}`}
+        structuredData={venueStructuredData}
+      />
       {/* Navigation */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
