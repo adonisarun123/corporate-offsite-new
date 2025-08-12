@@ -165,7 +165,7 @@ const VenueDetailPage = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 size="lg" 
-                className="bg-primary text-white hover:bg-primary/90"
+                className="bg-white text-primary hover:bg-white/90 hover:text-primary font-semibold shadow-lg"
                 onClick={() => {
                   trackCTAClick('get_venue_quote', venue.name)
                   whatsappActions.quote(`${venue.name} in ${destination.name}`)
@@ -176,7 +176,7 @@ const VenueDetailPage = () => {
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="text-white border-white hover:bg-white hover:text-black"
+                className="text-white border-white border-2 hover:bg-white hover:text-primary font-semibold shadow-lg"
                 onClick={() => {
                   trackCTAClick('call_venue_expert', venue.name)
                   phoneActions.general()
